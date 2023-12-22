@@ -119,7 +119,8 @@ bool IniManager::readCfgInfos(inifile::IniFile& ini_parser)
     }
 
     section = "CORE0_SEG";
-    if(!getCoreSegInfo(ini_parser, section, m_seg_infos_core0)){
+    if(!getCoreSegInfo(ini_parser, section, m_seg_infos_core0))
+    {
         return false;
     }
     m_seg_nums_core0 = getSegNums(ini_parser,section);
@@ -127,7 +128,8 @@ bool IniManager::readCfgInfos(inifile::IniFile& ini_parser)
     if(!m_input_file_path_core1.empty())
     {
         section = "CORE1_SEG";
-        if(!getCoreSegInfo(ini_parser, section, m_seg_infos_core1)){
+        if(!getCoreSegInfo(ini_parser, section, m_seg_infos_core1))
+        {
             return false;
         }
         m_seg_nums_core1 = getSegNums(ini_parser,section);
@@ -227,7 +229,7 @@ bool IniManager::checkDualSegInfos()
             return false;
         }
 
-        if(addr.count(it.start_addr) != 0)
+        if(it.overlay_idx == 0 && addr.count(it.start_addr) != 0)
         {
             err_msg = "Error: SEG's StartAddr can't be same!";
             return false;
@@ -238,7 +240,7 @@ bool IniManager::checkDualSegInfos()
         {
             if(it.start_addr > iter.start_addr)
             {
-                if(iter.start_addr + iter.max_length > it.start_addr)
+                if(iter.overlay_idx == 0 && iter.start_addr + iter.max_length > it.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -246,7 +248,7 @@ bool IniManager::checkDualSegInfos()
             }
             else if(it.start_addr < iter.start_addr)
             {
-                if(it.start_addr + it.max_length > iter.start_addr)
+                if(it.overlay_idx == 0 && it.start_addr + it.max_length > iter.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -261,7 +263,7 @@ bool IniManager::checkDualSegInfos()
         {
             if(it.start_addr > iter.start_addr)
             {
-                if(iter.start_addr + iter.max_length > it.start_addr)
+                if(iter.overlay_idx == 0 && iter.start_addr + iter.max_length > it.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -269,7 +271,7 @@ bool IniManager::checkDualSegInfos()
             }
             else if(it.start_addr < iter.start_addr)
             {
-                if(it.start_addr + it.max_length > iter.start_addr)
+                if(it.overlay_idx == 0 && it.start_addr + it.max_length > iter.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -306,7 +308,7 @@ bool IniManager::checkDualSegInfos()
         {
             if(it.start_addr > iter.start_addr)
             {
-                if(iter.start_addr + iter.max_length > it.start_addr)
+                if(iter.overlay_idx == 0 && iter.start_addr + iter.max_length > it.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -314,7 +316,7 @@ bool IniManager::checkDualSegInfos()
             }
             else if(it.start_addr < iter.start_addr)
             {
-                if(it.start_addr + it.max_length > iter.start_addr)
+                if(it.overlay_idx == 0 && it.start_addr + it.max_length > iter.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -329,7 +331,7 @@ bool IniManager::checkDualSegInfos()
         {
             if(it.start_addr > iter.start_addr)
             {
-                if(iter.start_addr + iter.max_length > it.start_addr)
+                if(iter.overlay_idx == 0 && iter.start_addr + iter.max_length > it.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -337,7 +339,7 @@ bool IniManager::checkDualSegInfos()
             }
             else if(it.start_addr < iter.start_addr)
             {
-                if(it.start_addr + it.max_length > iter.start_addr)
+                if(it.overlay_idx == 0 && it.start_addr + it.max_length > iter.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -396,15 +398,16 @@ bool IniManager::checkSingleSegInfos()
         {
             if(it.start_addr > iter.start_addr)
             {
-                if(iter.start_addr + iter.max_length > it.start_addr)
+                if(iter.overlay_idx == 0 && iter.start_addr + iter.max_length > it.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
                 }
+               
             }
             else if(it.start_addr < iter.start_addr)
             {
-                if(it.start_addr + it.max_length > iter.start_addr)
+                if(it.overlay_idx == 0 && it.start_addr + it.max_length > iter.start_addr)
                 {
                     err_msg = "Error: One or some SEG's StartAddr + MaxLength > other SEG's StartAddr, will result in data loss!";
                     return false;
@@ -454,6 +457,20 @@ bool IniManager::getCoreSegInfo(inifile::IniFile& ini_parser, std::string& secti
             {
                 return false;
             }
+
+            int num = 0;
+            if (!GetIntValue(ini_parser, sec, "CpuId", num))
+            {
+                return false;
+            }
+            info.cpu_id = num;
+
+            if (!GetIntValue(ini_parser, sec, "Overlay", num))
+            {
+                return false;
+            }
+            info.overlay_idx = num;
+
             seg_infos.emplace_back(info);
             i++;
         }

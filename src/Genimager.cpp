@@ -72,8 +72,10 @@ bool DualGenimager::BuildTargetFile()
         header.fwInfo[i].addr = m_ini_manager->m_seg_infos_core0[i].start_addr;
         header.fwInfo[i].offset = m_target_file_size;
         header.fwInfo[i].size = align_size; 
-        printf("Filename: %s [addr = 0x%x  -  offset = 0x%x  -  size = 0x%x]\n"
-                , m_ini_manager->m_seg_infos_core0[i].file_name.c_str(), header.fwInfo[i].addr, header.fwInfo[i].offset, header.fwInfo[i].size);
+        header.fwInfo[i].cpuId = m_ini_manager->m_seg_infos_core0[i].cpu_id;
+        header.fwInfo[i].overlayIdx = m_ini_manager->m_seg_infos_core0[i].overlay_idx;
+        printf("Filename: %s [addr = 0x%x  -  offset = 0x%x  -  size = 0x%x  -  cpuid = %d  -  overlayidx = %d]\n"
+                , m_ini_manager->m_seg_infos_core0[i].file_name.c_str(), header.fwInfo[i].addr, header.fwInfo[i].offset, header.fwInfo[i].size, header.fwInfo[i].cpuId, header.fwInfo[i].overlayIdx);
 
         output_file.write(buf, align_size);
         m_target_file_size += align_size;
@@ -104,6 +106,8 @@ bool DualGenimager::BuildTargetFile()
         header.fwInfo[i+j].addr = m_ini_manager->m_seg_infos_core1[j].start_addr;
         header.fwInfo[i+j].offset = m_target_file_size;
         header.fwInfo[i+j].size = align_size; 
+        header.fwInfo[i+j].cpuId = m_ini_manager->m_seg_infos_core1[j].cpu_id; 
+        header.fwInfo[i+j].overlayIdx = m_ini_manager->m_seg_infos_core1[j].overlay_idx; 
         printf("Filename: %s [addr = 0x%x  -  offset = 0x%x  -  size = 0x%x]\n"
                 , m_ini_manager->m_seg_infos_core1[j].file_name.c_str(), header.fwInfo[i+j].addr, header.fwInfo[i+j].offset, header.fwInfo[i+j].size);
 

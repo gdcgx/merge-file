@@ -14,7 +14,9 @@ struct fwStructure
     uint32_t offset;
     uint32_t addr;
     uint32_t size;
-    uint32_t rsvd;
+    uint8_t  cpuId;
+    uint8_t  overlayIdx;
+    uint16_t rsvd;
 };
 
 struct binFileHeader
@@ -48,5 +50,7 @@ struct fwImageHeader
 struct cfgSegInfo{
     uint32_t    start_addr;
     uint32_t    max_length;         // 保留字段
+    uint8_t     overlay_idx;
+    uint8_t     cpu_id;
     std::string file_name;
 };

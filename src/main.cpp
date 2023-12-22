@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 {
     std::cout << "****----------------------merge bin start----------------------****" << std::endl;
     int i = 1;
-    // std::string ini_path = "make_rdk_MP_test.ini";
+    // std::string ini_path = "./cfg/make_sbl_burner_head_type_daulcore_demo.ini";
     // ini_path = checkCfgPathExits(ini_path);
     checkAndCreateBinPath();
 
@@ -74,6 +74,7 @@ int main(int argc, char **argv)
 
     if (ini_path.empty())
     {
+        std::cout << "Error: Cfg Path Is Empty!" << std::endl;
         return -1;
     }
 
@@ -85,7 +86,8 @@ int main(int argc, char **argv)
     }
 
     auto iniManager = std::make_shared<IniManager>();
-    if(!iniManager->Init(ini_parser)){
+    if(!iniManager->Init(ini_parser))
+    {
         std::cout << iniManager->GetErrString() << std::endl;
         return -1;
     }
